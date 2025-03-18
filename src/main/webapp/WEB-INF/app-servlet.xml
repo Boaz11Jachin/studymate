@@ -27,10 +27,11 @@
         <property name="typeAliasesPackage" value="org.codenova.studymate.model" />
         <property name="mapperLocations" value="/WEB-INF/mappers/*-mapper.xml" />
         <property name="dataSource" ref="datasource" />
-        <property name="configurationProperties" >
-            <props>
-                <prop key="mapUnderscoreToCamelCase">true</prop>
-            </props>
+
+        <property name="configuration">
+            <bean class="org.apache.ibatis.session.Configuration">
+                <property name="mapUnderscoreToCamelCase" value="true"/>
+            </bean>
         </property>
     </bean>
 

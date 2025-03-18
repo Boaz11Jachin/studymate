@@ -18,4 +18,8 @@ public class UserRepository {
         return template.insert("user.create", user);
     }
 
+    public int updateLoginCountByUserId(String id){
+        return template.update("user.updateLoginCountByUserId", id);
+    }
+
 }

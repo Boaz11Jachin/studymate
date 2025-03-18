@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.codenova.studymate.model.User;
 import org.codenova.studymate.repository.AvatarRepository;
+import org.codenova.studymate.repository.LoginLogRepository;
 import org.codenova.studymate.repository.UserRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +19,7 @@ public class AuthController {
 
     private AvatarRepository avatarRepository;
     private UserRepository userRepository;
+    private LoginLogRepository loginLogRepository;
 
     @RequestMapping("/signup")
     public String signupHandle(Model model) {
@@ -41,4 +43,27 @@ public class AuthController {
         return "redirect:/index";
     }
 
+    @RequestMapping("/login")
+    public String loginHandle(Model model){
+        return "auth/login";
+    }
+
+    @RequestMapping("/login/verify")
+    public String loginVerifyHandle(@ModelAttribute User user){
+
+        User found = userRepository.findById(user.getId() );
+        if(found != null){
+            if(found.getPassword().equals(user.getPassword()) ){
+                userRepository.updateLoginCountByUserId(user.getId() );
+                loginLogRepository.create(user.getId() );
+
+
+                return "redirect:/index";
+            }
+        }
+
+
+        return "auth/login";
+
+    }
 }
