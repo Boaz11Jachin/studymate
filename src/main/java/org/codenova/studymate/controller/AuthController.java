@@ -3,6 +3,7 @@ package org.codenova.studymate.controller;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.codenova.studymate.model.Avatar;
 import org.codenova.studymate.model.User;
 import org.codenova.studymate.repository.AvatarRepository;
 import org.codenova.studymate.repository.LoginLogRepository;
@@ -60,6 +61,11 @@ public class AuthController {
             userRepository.updateLoginCountByUserId(user.getId());
             loginLogRepository.create(user.getId());
             session.setAttribute("user", found);
+
+            session.setAttribute("avatar",avatarRepository.findById(user.getAvatarId()) );
+
+            // 아니고avatar = (Avatar)session.getAttribute("user");
+
 
             return "redirect:/index";
         }

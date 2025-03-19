@@ -24,7 +24,10 @@ public class WelcomeController {
             // int avatarId = user.getAvatarId();
 
             Avatar userAvatar = avatarRepository.findById(user.getAvatarId());
-            model.addAttribute("userAvatar", userAvatar);
+            model.addAttribute("avatar", userAvatar);
+
+
+
 
             return "index-authenticated";
         }

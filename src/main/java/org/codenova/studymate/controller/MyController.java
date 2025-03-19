@@ -2,6 +2,7 @@ package org.codenova.studymate.controller;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
+import org.codenova.studymate.model.Avatar;
 import org.codenova.studymate.model.LoginLog;
 import org.codenova.studymate.model.User;
 import org.codenova.studymate.repository.AvatarRepository;
@@ -32,6 +33,8 @@ public class MyController {
         List<LoginLog> loginList = loginLogRepository.findByUserId(user.getId() );
         model.addAttribute("loginList", loginList);
 
+        Avatar avatar = (Avatar)session.getAttribute("avatar");
+        model.addAttribute("avatar", avatar);
 
         return "my/profile";
     }
