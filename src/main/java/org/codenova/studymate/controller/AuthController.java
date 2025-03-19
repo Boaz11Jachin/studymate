@@ -1,5 +1,6 @@
 package org.codenova.studymate.controller;
 
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.codenova.studymate.model.User;
@@ -23,18 +24,18 @@ public class AuthController {
 
     @RequestMapping("/signup")
     public String signupHandle(Model model) {
-        model.addAttribute("avatars", avatarRepository.findAll() );
+        model.addAttribute("avatars", avatarRepository.findAll());
 
         return "auth/signup";
     }
 
     @RequestMapping("/signup/verify")
     public String signupVerifyHandle(@ModelAttribute @Valid User user, BindingResult result, Model model) {
-        if(result.hasErrors()) {
+        if (result.hasErrors()) {
             // 에러처리를 하고,
             return "auth/signup/verify-failed";
         }
-        if(userRepository.findById(user.getId()) != null) {
+        if (userRepository.findById(user.getId()) != null) {
             // 에러 처리하고
             return "auth/signup/verify-failed";
         }
@@ -44,26 +45,23 @@ public class AuthController {
     }
 
     @RequestMapping("/login")
-    public String loginHandle(Model model){
+    public String loginHandle(Model model) {
         return "auth/login";
     }
 
     @RequestMapping("/login/verify")
-    public String loginVerifyHandle(@ModelAttribute User user){
+    public String loginVerifyHandle(@ModelAttribute User user, HttpSession session) {
 
-        User found = userRepository.findById(user.getId() );
-        if(found != null){
-            if(found.getPassword().equals(user.getPassword()) ){
-                userRepository.updateLoginCountByUserId(user.getId() );
-                loginLogRepository.create(user.getId() );
+        User found = userRepository.findById(user.getId());
+        if (found == null || !found.getPassword().equals(user.getPassword())) {
+            return "auth/login/verify-failed";
+        } else {
+            //else 없어도 같은 효과
+            userRepository.updateLoginCountByUserId(user.getId());
+            loginLogRepository.create(user.getId());
+            session.setAttribute("user", found);
 
-
-                return "redirect:/index";
-            }
+            return "redirect:/index";
         }
-
-
-        return "auth/login";
-
     }
 }

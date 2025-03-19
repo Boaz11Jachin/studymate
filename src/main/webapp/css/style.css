@@ -75,7 +75,6 @@ body {
 
 /* related auth page -------------------------------------------------------- */
 .auth-header {
-
     padding : 15px;
     box-shadow: 0 1px 1px 0 rgba(0,0,0,.08);
     text-align: center;
@@ -110,4 +109,15 @@ body {
     height: 100px;
     margin-bottom: 20px;
     border : 1px solid rgba(0,0,0,.08);
+}
+
+
+/* related index-authenticated page  ------------------------ */
+.bottom-border-div {
+    box-shadow: 0 1px 1px 0 rgba(0,0,0,.08);
+}
+.wrap {
+    max-width: 960px;
+    margin : auto;
+
 }
