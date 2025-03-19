@@ -22,7 +22,7 @@ public class LoginLogRepository {
     }
 
     public LoginLog findLatestByUserId (String userId){
-        return sqlSessionTemplate.selectOne("loginLog.findLastestByUserId", userId);
+        return sqlSessionTemplate.selectOne("loginLog.findLatestByUserId", userId);
     }
 
 }
