@@ -62,9 +62,10 @@ public class AuthController {
             loginLogRepository.create(user.getId());
             session.setAttribute("user", found);
 
-            session.setAttribute("avatar",avatarRepository.findById(user.getAvatarId()) );
+            Avatar avatar = avatarRepository.findById(found.getAvatarId());
+            session.setAttribute("avatar",avatar);
 
-            // 아니고avatar = (Avatar)session.getAttribute("user");
+
 
 
             return "redirect:/index";
