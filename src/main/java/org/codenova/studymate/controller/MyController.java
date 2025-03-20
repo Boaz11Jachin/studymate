@@ -2,9 +2,9 @@ package org.codenova.studymate.controller;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
-import org.codenova.studymate.model.Avatar;
-import org.codenova.studymate.model.LoginLog;
-import org.codenova.studymate.model.User;
+import org.codenova.studymate.model.entity.Avatar;
+import org.codenova.studymate.model.entity.LoginLog;
+import org.codenova.studymate.model.entity.User;
 import org.codenova.studymate.repository.AvatarRepository;
 import org.codenova.studymate.repository.LoginLogRepository;
 import org.codenova.studymate.repository.UserRepository;
