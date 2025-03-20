@@ -8,9 +8,11 @@ import org.codenova.studymate.model.User;
 import org.codenova.studymate.repository.AvatarRepository;
 import org.codenova.studymate.repository.LoginLogRepository;
 import org.codenova.studymate.repository.UserRepository;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 import java.util.List;
 
@@ -24,8 +26,14 @@ public class MyController {
     private LoginLogRepository loginLogRepository;
 
     @RequestMapping("/profile")
-    public String profileHandle(HttpSession session, Model model){
-        User user = (User)session.getAttribute("user");
+    public String profileHandle(HttpSession session, Model model,
+                                @SessionAttribute("user") @Nullable User user){
+
+        // User user = (User)session.getAttribute("user");
+       if(user == null){
+           return "redirect:/auth/login";
+       }
+
         model.addAttribute("user", user);
 
         LoginLog latestLogin = loginLogRepository.findLatestByUserId(user.getId() );

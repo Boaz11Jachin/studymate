@@ -2,12 +2,15 @@ package org.codenova.studymate.controller;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
+import org.codenova.studymate.model.Avatar;
 import org.codenova.studymate.model.StudyGroup;
 import org.codenova.studymate.model.StudyMember;
 import org.codenova.studymate.model.User;
 import org.codenova.studymate.repository.StudyGroupRepository;
 import org.codenova.studymate.repository.StudyMemberRepository;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttribute;
@@ -23,8 +26,11 @@ public class StudyController {
 
 
     @RequestMapping("/create")
-    public String createHandle() {
-        return "study/create";
+    public String createHandle(@SessionAttribute("avatar") @Nullable Avatar avatar, Model model) {
+
+       model.addAttribute("avatar", avatar);
+       return "study/create";
+
     }
 
     @RequestMapping("/create/verify")

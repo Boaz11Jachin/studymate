@@ -16,21 +16,21 @@
         </div>
         <div>
             <a href="${pageContext.request.contextPath}/my/profile">
-                <img src="${pageContext.request.contextPath}${userAvatar.imageUrl}" style="height: 35px"/>
+                <img src="${pageContext.request.contextPath}${avatar.imageUrl}" style="height: 35px"/>
             </a>
         </div>
     </div>
 </div>
 <div >
     <div class="study-main wrap">
-        <form style="padding: 20px 0px;">
+        <form style="padding: 20px 0px;" action="${pageContext.request.contextPath}/study/create/verify">
             <label class="label">스터디 이름</label>
             <div style="padding:8px 0px" class="bottom-border-div">
-                <input type="text" placeholder="스터디 이름 입력" class="input-text"/>
+                <input type="text" placeholder="스터디 이름 입력" class="input-text" name="name"/>
             </div>
             <label class="label">스터디 목표</label>
             <div style="padding:8px 0px" class="bottom-border-div">
-                <input type="text" placeholder="스터디 목표 입력" class="input-text"/>
+                <input type="text" placeholder="스터디 목표 입력" class="input-text" name="goal"/>
             </div>
             <label class="label">스터디 공개</label>
             <div class="type-box">
