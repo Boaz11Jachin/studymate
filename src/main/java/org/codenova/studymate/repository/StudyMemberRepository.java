@@ -2,8 +2,11 @@ package org.codenova.studymate.repository;
 
 import lombok.AllArgsConstructor;
 import org.codenova.studymate.model.entity.StudyMember;
+import org.codenova.studymate.model.vo.StudyGroupWithCreator;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 @AllArgsConstructor
@@ -21,5 +24,7 @@ public class StudyMemberRepository {
     public int updateJoinedAtById(int id){
         return sqlSessionTemplate.update("studyMember.updateJoinedAtById", id);
     }
+
+    // public List<StudyGroupWithCreator>
 
 }

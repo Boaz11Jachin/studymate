@@ -13,10 +13,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,8 +62,7 @@ public class StudyController {
     @RequestMapping("/search")
     public String searchHandle(@RequestParam("word") Optional<String> word, Model model,
                                @SessionAttribute("avatar") @Nullable Avatar avatar){
-        model.addAttribute("avatar", avatar);
-        // 내가 한줄 추가한것
+
 
         if(word.isEmpty()){
             return "redirect:/";
@@ -94,6 +90,47 @@ public class StudyController {
         model.addAttribute("result", convertedResult);
 
         return "study/search";
+    }
+
+    @RequestMapping("/{id}")
+    public String viewHandle(@PathVariable("id") String id, Model model){
+        System.out.println(id);
+
+        StudyGroup group = studyGroupRepository.findById(id);
+        if(group == null){
+            return "redirect:/";
+        }
+        model.addAttribute("group", group);
+
+        return "study/view";
+    }
+
+    @Transactional
+    @RequestMapping("/{id}/join")
+    public String joinHandle(@PathVariable("id") String id, @SessionAttribute("user") User user){
+
+        StudyMember s = StudyMember.builder().userId(user.getId()).groupId(id).role("멤버").build();
+
+         /*
+        StudyMember member = new StudyMember();
+        member.setUserId(user.getId());
+        member.setGroupId(id);
+        member.setRole("멤버");
+        */
+
+        StudyGroup sg = studyGroupRepository.findById(id);
+        if (sg.getType().equals("공개") ){
+            studyMemberRepository.createApproved(s);
+            studyGroupRepository.addMemberCountById(id);
+        } else {
+            studyMemberRepository.createPending(s);
+        }
+
+
+
+        // List<StudyGroupWithCreator> list = new ArrayList<>();
+
+        return "redirect:/study/"+id;
     }
 
 }
