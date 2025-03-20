@@ -25,6 +25,8 @@ public class StudyMemberRepository {
         return sqlSessionTemplate.update("studyMember.updateJoinedAtById", id);
     }
 
-    // public List<StudyGroupWithCreator>
+    public List<StudyMember> studyGroupsByUserId (String userId){
+        return sqlSessionTemplate.selectList("studyMember.studyGroupsByUserId", userId);
+    }
 
 }

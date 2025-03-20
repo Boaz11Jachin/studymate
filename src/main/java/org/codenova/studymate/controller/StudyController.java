@@ -109,6 +109,17 @@ public class StudyController {
     @RequestMapping("/{id}/join")
     public String joinHandle(@PathVariable("id") String id, @SessionAttribute("user") User user){
 
+        List<StudyMember> list = studyMemberRepository.studyGroupsByUserId(user.getId());
+
+        boolean alreadyJoined = false;
+
+        for(StudyMember one : list){
+            if(one.getGroupId().equals(id)){
+                alreadyJoined = true;
+            }
+        }
+
+
         StudyMember s = StudyMember.builder().userId(user.getId()).groupId(id).role("멤버").build();
 
          /*
@@ -118,17 +129,17 @@ public class StudyController {
         member.setRole("멤버");
         */
 
-        StudyGroup sg = studyGroupRepository.findById(id);
-        if (sg.getType().equals("공개") ){
-            studyMemberRepository.createApproved(s);
-            studyGroupRepository.addMemberCountById(id);
-        } else {
-            studyMemberRepository.createPending(s);
+        if(!alreadyJoined) {
+            StudyGroup sg = studyGroupRepository.findById(id);
+            if (sg.getType().equals("공개")) {
+                studyMemberRepository.createApproved(s);
+                studyGroupRepository.addMemberCountById(id);
+            } else {
+                studyMemberRepository.createPending(s);
+            }
         }
 
 
-
-        // List<StudyGroupWithCreator> list = new ArrayList<>();
 
         return "redirect:/study/"+id;
     }
