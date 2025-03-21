@@ -3,7 +3,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>스터디 만들기 | 스터디메이트</title>
+    <title>${group.name} | 스터디메이트</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css"/>
 </head>
 <body>
@@ -20,30 +20,63 @@ background-color: #afafaf; color:white" placeholder="스터디 검색" value="${
         </div>
         <div>
             <a href="${pageContext.request.contextPath}/my/profile">
-                <img src="${pageContext.request.contextPath}${avatar.imageUrl}" style="height: 35px"/>
+                <img src="${pageContext.request.contextPath}${userAvatar.imageUrl}" style="height: 35px"/>
             </a>
         </div>
     </div>
 </div>
-<div>
-    <div class="study-main wrap">
+<div style="padding : 20px 0px;">
+    <div class="study-main wrap" style="background-color: white;">
         <div style="display: flex; gap:20px">
-            <div style="width: 200px">
+            <div style="width: 200px;  ">
                 <h2>${group.name}</h2>
                 <div style="font-size : 0.8em">
-                    멤버 <span>${group.memberCount}</span>
+                    멤버 <span>${group.memberCount}</span> •
+                    리더 <span>${group.creatorId}</span>
                 </div>
                 <div style="font-size : 0.8em">
                     개설일 <span>${group.createdAt}</span>
                 </div>
-                <p>
-                    <a href="${pageContext.request.contextPath}/study/${group.id}/join">
-                        <button>스터디가입하기</button>
-                    </a>
-                </p>
-                <div style="font-size: 0.75em">
-                    누구나 스터디를 검색해 찾을 수 있고, 가입할 수 있습니다.
-                </div>
+                ${status}
+                <c:choose>
+                    <c:when test="${status == 'NOT_JOINED'}">
+                        <p>
+                            <a href="${pageContext.request.contextPath}/study/${group.id}/join">
+                                <button style="width: 100%; padding: 5px; font-size:1em;">스터디가입하기</button>
+                            </a>
+                        </p>
+                    </c:when>
+                    <c:when test="${status == 'PENDING'}">
+                        <p>
+                            <button style="width: 100%; padding: 5px; font-size:1em;" disabled>승인 대기중</button>
+                        </p>
+                    </c:when>
+                    <c:when test="${status == 'MEMBER'}">
+                        <p>
+                            <button style="width: 100%; padding: 5px; font-size:1em;" disabled>스터티 탈퇴하기</button>
+                        </p>
+                    </c:when>
+                    <c:otherwise>
+                        <p>
+                            <button style="width: 100%; padding: 5px; font-size:1em;" disabled>스터티 해산하기</button>
+                        </p>
+                    </c:otherwise>
+                </c:choose>
+
+
+                <c:choose>
+                    <c:when test="${group.type == '공개'}">
+                        <div style="font-size: 0.75em">
+                            누구나 스터디를 검색해 찾을 수 있고, <b>가입할 수 있습니다</b>.
+                        </div>
+                    </c:when>
+                    <c:otherwise>
+                        <div style="font-size: 0.75em">
+                            누구나 스터디를 검색해 찾을 수 있지만, <b>가입에는 승인이 필요합니다</b>.
+                        </div>
+                    </c:otherwise>
+                </c:choose>
+
             </div>
         </div>
     </div>

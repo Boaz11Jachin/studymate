@@ -14,11 +14,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.SessionStatus;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Controller
 @RequestMapping("/study")
@@ -92,14 +90,36 @@ public class StudyController {
         return "study/search";
     }
 
+    // 스터디 상세보기 핸들러
     @RequestMapping("/{id}")
-    public String viewHandle(@PathVariable("id") String id, Model model) {
+    public String viewHandle(@PathVariable("id") String id, Model model,
+                             @SessionAttribute("user") User user, SessionStatus sessionStatus) {
         System.out.println(id);
 
         StudyGroup group = studyGroupRepository.findById(id);
         if (group == null) {
             return "redirect:/";
         }
+        Map<String, Object> map = new HashMap<>();
+        map.put("groupId", id);
+        map.put("userId", user.getId());
+        StudyMember status = studyMemberRepository.findByUserIdAndGroupId(map);
+        if (status == null) {
+            // 아직 참여한 적 없다
+            model.addAttribute("status", "NOT_JOINED");
+        } else if (status.getJoinedAt() == null) {
+            //승인대기중
+            model.addAttribute("status", "PENDING");
+        } else if (status.getRole().equals("멤버")) {
+            //이미 승인받아 참여중이다
+            //멤버이다
+            model.addAttribute("status", "MEMBER");
+        } else {
+            //리더이다
+            model.addAttribute("status", "LEADER");
+        }
+
+
         model.addAttribute("group", group);
 
         return "study/view";
