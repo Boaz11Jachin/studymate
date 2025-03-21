@@ -34,4 +34,9 @@ public class StudyMemberRepository {
         return sqlSessionTemplate.selectOne("studyMember.findByUserIdAndGroupId", params);
     }
 
+    public int deleteById(int id) {
+        return sqlSessionTemplate.delete("studyMember.deleteById", id);
+    }
+
+
 }

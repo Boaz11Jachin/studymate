@@ -165,4 +165,38 @@ public class StudyController {
         return "redirect:/study/" + id;
     }
 
+    // 탈퇴 요청 처리 핸들러
+
+    @RequestMapping("/{groupId}/leave")
+    public String leaveHandle(@PathVariable("groupId") String groupId, Model model,
+                              @SessionAttribute("user") User user){
+
+        String userId = user.getId();
+        Map map = Map.of("groupId", groupId, "userId", userId);
+
+        StudyMember found = studyMemberRepository.findByUserIdAndGroupId(map);
+        studyMemberRepository.deleteById(found.getId());
+
+        studyGroupRepository.subtractMemberCountById(groupId);
+
+        return "redirect:/";
+    }
+
+    // 신청 철회 요청 핸들러
+    @RequestMapping("/{groupId}/cancel")
+    public String cancelHandle(@SessionAttribute("user") User user, @PathVariable("groupId") String groupId){
+
+        String userId = user.getId();
+        Map map = Map.of("groupId", groupId, "userId", userId);
+
+        StudyMember found = studyMemberRepository.findByUserIdAndGroupId(map);
+        if(found != null && found.getJoinedAt() == null && found.getRole().equals("멤버")) {
+            studyMemberRepository.deleteById(found.getId());
+        }
+        return "redirect:/study/" + groupId;
+    }
+
+
+
+
 }

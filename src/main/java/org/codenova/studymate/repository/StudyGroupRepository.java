@@ -3,6 +3,7 @@ package org.codenova.studymate.repository;
 import lombok.AllArgsConstructor;
 import org.codenova.studymate.model.entity.StudyGroup;
 import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.http.converter.json.GsonBuilderUtils;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -20,6 +21,10 @@ public class StudyGroupRepository {
         return sqlSessionTemplate.update("studyGroup.addMemberCountById", id);
     }
 
+    public int subtractMemberCountById (String id) {
+        return sqlSessionTemplate.update("studyGroup.subtractMemberCountById", id);
+    }
+
     public List<StudyGroup> findByNameLikeOrGoalLike(String word){
         return sqlSessionTemplate.selectList("studyGroup.findByNameLikeOrGoalLike", word);
     }
@@ -27,6 +32,8 @@ public class StudyGroupRepository {
     public StudyGroup findById (String id){
         return sqlSessionTemplate.selectOne("studyGroup.findById", id);
     }
+
+
 
 
 
