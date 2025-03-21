@@ -38,5 +38,8 @@ public class StudyMemberRepository {
         return sqlSessionTemplate.delete("studyMember.deleteById", id);
     }
 
+    public int deleteByGroupId(String groupId){
+        return sqlSessionTemplate.delete("studyMember.deleteByGroupId", groupId);
+    }
 
 }
