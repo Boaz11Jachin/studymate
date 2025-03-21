@@ -32,8 +32,8 @@ public class StudyController {
     @RequestMapping("/create")
     public String createHandle(@SessionAttribute("avatar") @Nullable Avatar avatar, Model model) {
 
-       model.addAttribute("avatar", avatar);
-       return "study/create";
+        model.addAttribute("avatar", avatar);
+        return "study/create";
 
     }
 
@@ -49,29 +49,29 @@ public class StudyController {
         studyGroupRepository.create(studyGroup);
 
         StudyMember studyMember = new StudyMember();
-        studyMember.setUserId(user.getId() );
-        studyMember.setGroupId(studyGroup.getId() );
+        studyMember.setUserId(user.getId());
+        studyMember.setGroupId(studyGroup.getId());
         studyMember.setRole("리더");
         studyMemberRepository.createApproved(studyMember);
 
-        studyGroupRepository.addMemberCountById(studyGroup.getId() );
+        studyGroupRepository.addMemberCountById(studyGroup.getId());
 
-        return "redirect:/";
+        return "redirect:/study/" + randomId;
     }
 
     @RequestMapping("/search")
     public String searchHandle(@RequestParam("word") Optional<String> word, Model model,
-                               @SessionAttribute("avatar") @Nullable Avatar avatar){
+                               @SessionAttribute("avatar") @Nullable Avatar avatar) {
 
 
-        if(word.isEmpty()){
+        if (word.isEmpty()) {
             return "redirect:/";
         }
         String wordValue = word.get();
-        List<StudyGroup> result = studyGroupRepository.findByNameLikeOrGoalLike("%"+wordValue+"%");
+        List<StudyGroup> result = studyGroupRepository.findByNameLikeOrGoalLike("%" + wordValue + "%");
         List<StudyGroupWithCreator> convertedResult = new ArrayList<>();
 
-        for(StudyGroup one : result) {
+        for (StudyGroup one : result) {
             User found = userRepository.findById(one.getCreatorId());
 
             StudyGroupWithCreator c = StudyGroupWithCreator.builder().group(one).creator(found).build();
@@ -93,11 +93,11 @@ public class StudyController {
     }
 
     @RequestMapping("/{id}")
-    public String viewHandle(@PathVariable("id") String id, Model model){
+    public String viewHandle(@PathVariable("id") String id, Model model) {
         System.out.println(id);
 
         StudyGroup group = studyGroupRepository.findById(id);
-        if(group == null){
+        if (group == null) {
             return "redirect:/";
         }
         model.addAttribute("group", group);
@@ -107,20 +107,22 @@ public class StudyController {
 
     @Transactional
     @RequestMapping("/{id}/join")
-    public String joinHandle(@PathVariable("id") String id, @SessionAttribute("user") User user){
+    public String joinHandle(@PathVariable("id") String id, @SessionAttribute("user") User user) {
 
         List<StudyMember> list = studyMemberRepository.studyGroupsByUserId(user.getId());
 
         boolean alreadyJoined = false;
 
-        for(StudyMember one : list){
-            if(one.getGroupId().equals(id)){
+        for (StudyMember one : list) {
+            if (one.getGroupId().equals(id)) {
                 alreadyJoined = true;
+                break;
             }
         }
 
+        if (!alreadyJoined) {
 
-        StudyMember s = StudyMember.builder().userId(user.getId()).groupId(id).role("멤버").build();
+            StudyMember s = StudyMember.builder().userId(user.getId()).groupId(id).role("멤버").build();
 
          /*
         StudyMember member = new StudyMember();
@@ -129,7 +131,7 @@ public class StudyController {
         member.setRole("멤버");
         */
 
-        if(!alreadyJoined) {
+
             StudyGroup sg = studyGroupRepository.findById(id);
             if (sg.getType().equals("공개")) {
                 studyMemberRepository.createApproved(s);
@@ -140,8 +142,7 @@ public class StudyController {
         }
 
 
-
-        return "redirect:/study/"+id;
+        return "redirect:/study/" + id;
     }
 
 }
