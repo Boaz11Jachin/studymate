@@ -3,6 +3,7 @@ package org.codenova.studymate.controller;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import org.codenova.studymate.model.entity.Avatar;
+import org.codenova.studymate.model.entity.StudyGroup;
 import org.codenova.studymate.model.entity.StudyMember;
 import org.codenova.studymate.model.entity.User;
 import org.codenova.studymate.repository.AvatarRepository;
@@ -13,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @AllArgsConstructor
@@ -36,7 +38,12 @@ public class WelcomeController {
         List<StudyMember> studyList = studyMemberRepository.studyGroupsByUserId(user.getId());
         model.addAttribute("studyList", studyList);
 
+        for(StudyMember one : studyList){
+            StudyMember sm = studyMemberRepository.findByUserIdAndGroupId(Map.of("userId", one.getUserId(), "groupId", one.getGroupId()));
+            StudyGroup sg = studyGroupRepository.findById(sm.getGroupId());
 
+            model.addAttribute(sg);
+        }
 
 
             return "index-authenticated";

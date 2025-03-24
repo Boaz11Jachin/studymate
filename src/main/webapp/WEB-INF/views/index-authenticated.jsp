@@ -52,7 +52,7 @@ display: flex; align-items: center">
                                 width: 156px; height: 156px;flex-shrink: 0; overflow: hidden">
                         <div style="background-color:#F5F6F8; display: flex; width: 100%; height: 100%; justify-content: center; align-items:center">
                             <h4>
-                                    ${one.groupId}
+                                    ${sg.name}
                             </h4>
 
                         </div>
