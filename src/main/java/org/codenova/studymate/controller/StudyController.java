@@ -1,14 +1,11 @@
 package org.codenova.studymate.controller;
 
 import lombok.AllArgsConstructor;
-import org.codenova.studymate.model.entity.Avatar;
-import org.codenova.studymate.model.entity.StudyGroup;
-import org.codenova.studymate.model.entity.StudyMember;
-import org.codenova.studymate.model.entity.User;
+import org.codenova.studymate.model.entity.*;
+import org.codenova.studymate.model.vo.PostMeta;
 import org.codenova.studymate.model.vo.StudyGroupWithCreator;
-import org.codenova.studymate.repository.StudyGroupRepository;
-import org.codenova.studymate.repository.StudyMemberRepository;
-import org.codenova.studymate.repository.UserRepository;
+import org.codenova.studymate.repository.*;
+import org.ocpsoft.prettytime.PrettyTime;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +13,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Controller
@@ -25,6 +24,9 @@ public class StudyController {
     private StudyGroupRepository studyGroupRepository;
     private StudyMemberRepository studyMemberRepository;
     private UserRepository userRepository;
+    private PostRepository postRepository;
+    private AvatarRepository avatarRepository;
+    private PostReactionRepository postReactionRepository;
 
 
     @RequestMapping("/create")
@@ -121,6 +123,33 @@ public class StudyController {
 
 
         model.addAttribute("group", group);
+
+
+
+
+
+        List<Post> posts = postRepository.findByGroupId(id);
+
+        List<PostMeta> postMetas = new ArrayList<>();
+
+        PrettyTime prettyTime = new PrettyTime();
+
+        for(Post post : posts){
+
+            long b = Duration.between(post.getWroteAt(), LocalDateTime.now()).getSeconds();
+            System.out.println(b);
+
+            PostMeta cvt = PostMeta.builder().id(post.getId())
+                    .content(post.getContent())
+                    .writerName(userRepository.findById(post.getWriterId()).getName())
+                    .writerAvatar(avatarRepository.findById(userRepository.findById(post.getWriterId()).getAvatarId()).getImageUrl())
+                    .time(prettyTime.format(post.getWroteAt()))
+                    .reactions(postReactionRepository.findByPostId(post.getId()))
+                    .build();
+            postMetas.add(cvt);
+        }
+
+        model.addAttribute("postMetas", postMetas);
 
         return "study/view";
     }
@@ -235,5 +264,55 @@ public class StudyController {
         return "redirect:/study/" + groupId;
     }
 
+    // 그룹 내 새글 등록
+    @RequestMapping("/{groupId}/post")
+    public String postHandle (@PathVariable("groupId") String groupId, @ModelAttribute Post post, @SessionAttribute("user") User user){
+
+        /*
+         모델 attribute 로 파라미터는 받았을텐데, 빠진 정보들이 있을거임. 이걸 추가로 set  .
+         postRepository를 이용해서 create 메서드 작성
+         */
+
+
+        post.setWriterId(user.getId());
+        post.setWroteAt(LocalDateTime.now());
+
+        postRepository.create(post);
+
+
+        return "redirect:/study/" + groupId;
+    }
+
+    //글에 감정 남기기 요청 처리 핸들
+    @RequestMapping("/{groupId}/post/{postId}/reaction")
+    public String postReactionHandle (@ModelAttribute PostReaction postReaction, @SessionAttribute("user") User user){
+
+        /*
+        Map map = new HashMap();
+        map.put("postId", postReaction.getPostId());
+        map.put("userId", user.getId());
+        */
+
+
+    //  Map map = Map.of("userId", user.getId(), "postId", postReaction.getPostId());
+
+        PostReaction found =
+        postReactionRepository.findByWriterIdAndPostId(Map.of("writerId", user.getId(), "postId", postReaction.getPostId()));
+
+
+        if(found == null) {
+            postReaction.setWriterId(user.getId());
+            postReactionRepository.create(postReaction);
+        }else {
+//          postRectionRepository.deleteById(found.getId());
+//          postRectionRepository.create(postReaction);
+
+//          postRectionRepository.updateFeelingById(postReaction);
+        }
+
+
+        return "redirect:/study/" + postReaction.getGroupId();
+
+    }
 
 }
