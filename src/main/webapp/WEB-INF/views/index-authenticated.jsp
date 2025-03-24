@@ -46,13 +46,13 @@ display: flex; align-items: center">
                 </div>
             </a>
 
-            <c:forEach var="one" items="${studyList}">
+            <c:forEach var="one" items="${groups}">
                 <a href="${pageContext.request.contextPath}/study/${one.groupId}" style="display: block; text-decoration: none">
                     <div style="border:1px solid rgba(0, 0, 0, .3); border-radius: 10px;
                                 width: 156px; height: 156px;flex-shrink: 0; overflow: hidden">
                         <div style="background-color:#F5F6F8; display: flex; width: 100%; height: 100%; justify-content: center; align-items:center">
                             <h4>
-                                    ${sg.name}
+                                    ${one.groupName}
                             </h4>
 
                         </div>
