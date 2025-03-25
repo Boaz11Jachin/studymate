@@ -15,4 +15,5 @@ public class StudyGroup {
     private String creatorId;
     private LocalDateTime createdAt;
     private int memberCount;
+
 }
