@@ -35,7 +35,7 @@ public class WelcomeController {
             // int avatarId = user.getAvatarId();
 
 
-            List<StudyMember> studyList = studyMemberRepository.studyGroupsByUserId(user.getId());
+            var studyList = studyMemberRepository.findWithGroupDetailByUserId(user.getId());
             model.addAttribute("studyList", studyList);
 
 

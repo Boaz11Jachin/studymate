@@ -14,4 +14,9 @@
     <select id="findByWriterIdAndPostId" resultType="postReaction" parameterType="map" >
         select * from post_reactions where writer_id = #{writerId} and post_id = #{postId}
     </select>
+    <select id="countFeelingByPostId" parameterType="int" resultType="feelingStats">
+        select feeling, count(*) as count from post_reactions
+        where post_id = #{postId}
+        group by feeling
+    </select>
 </mapper>
