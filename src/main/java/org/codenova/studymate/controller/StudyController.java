@@ -2,6 +2,7 @@ package org.codenova.studymate.controller;
 
 import lombok.AllArgsConstructor;
 import org.codenova.studymate.model.entity.*;
+import org.codenova.studymate.model.query.UserWithAvatar;
 import org.codenova.studymate.model.vo.PostMeta;
 import org.codenova.studymate.model.vo.StudyGroupWithCreator;
 import org.codenova.studymate.repository.*;
@@ -29,6 +30,14 @@ public class StudyController {
     private PostReactionRepository postReactionRepository;
 
 
+    @ModelAttribute("user")
+    public UserWithAvatar addUser(@SessionAttribute("user") UserWithAvatar user){
+        System.out.println("addUser ...");
+        return user;
+    }
+
+
+
     @RequestMapping("/create")
     public String createHandle(@SessionAttribute("avatar") @Nullable Avatar avatar, Model model) {
 
@@ -40,7 +49,7 @@ public class StudyController {
     @Transactional
     @RequestMapping("/create/verify")
     public String createVerifyHandle(@ModelAttribute StudyGroup studyGroup,
-                                     @SessionAttribute("user") User user) {
+                                     @SessionAttribute("user") UserWithAvatar user) {
 
         String randomId = UUID.randomUUID().toString().substring(24);
 
@@ -95,7 +104,7 @@ public class StudyController {
     // 스터디 상세보기 핸들러
     @RequestMapping("/{id}")
     public String viewHandle(@PathVariable("id") String id, Model model,
-                             @SessionAttribute("user") User user, SessionStatus sessionStatus) {
+                             @SessionAttribute("user") UserWithAvatar user, SessionStatus sessionStatus) {
         System.out.println(id);
 
         StudyGroup group = studyGroupRepository.findById(id);
@@ -156,7 +165,7 @@ public class StudyController {
 
     @Transactional
     @RequestMapping("/{id}/join")
-    public String joinHandle(@PathVariable("id") String id, @SessionAttribute("user") User user) {
+    public String joinHandle(@PathVariable("id") String id, @SessionAttribute("user") UserWithAvatar user) {
 
         List<StudyMember> list = studyMemberRepository.studyGroupsByUserId(user.getId());
 
@@ -198,7 +207,7 @@ public class StudyController {
 
     @RequestMapping("/{groupId}/leave")
     public String leaveHandle(@PathVariable("groupId") String groupId, Model model,
-                              @SessionAttribute("user") User user){
+                              @SessionAttribute("user") UserWithAvatar user){
 
         String userId = user.getId();
         Map map = Map.of("groupId", groupId, "userId", userId);
@@ -213,7 +222,7 @@ public class StudyController {
 
     // 신청 철회 요청 핸들러
     @RequestMapping("/{groupId}/cancel")
-    public String cancelHandle(@SessionAttribute("user") User user, @PathVariable("groupId") String groupId){
+    public String cancelHandle(@SessionAttribute("user") UserWithAvatar user, @PathVariable("groupId") String groupId){
 
         String userId = user.getId();
         Map map = Map.of("groupId", groupId, "userId", userId);
@@ -229,7 +238,7 @@ public class StudyController {
     @RequestMapping("/{groupId}/remove")
     @Transactional
     public String removeHandle(@PathVariable("groupId") String groupId,
-                               @SessionAttribute("user") User user){
+                               @SessionAttribute("user") UserWithAvatar user){
 
         StudyGroup studyGroup = studyGroupRepository.findById(groupId);
 
@@ -246,7 +255,7 @@ public class StudyController {
     @RequestMapping("/{groupId}/approve")
     public String approveHandle(@PathVariable("groupId") String groupId,
                                 @RequestParam("targetUserId") String targetUserId,
-                                @SessionAttribute("user") User user){
+                                @SessionAttribute("user") UserWithAvatar user){
 
         StudyGroup studyGroup = studyGroupRepository.findById(groupId);
 
@@ -266,7 +275,7 @@ public class StudyController {
 
     // 그룹 내 새글 등록
     @RequestMapping("/{groupId}/post")
-    public String postHandle (@PathVariable("groupId") String groupId, @ModelAttribute Post post, @SessionAttribute("user") User user){
+    public String postHandle (@PathVariable("groupId") String groupId, @ModelAttribute Post post, @SessionAttribute("user") UserWithAvatar user){
 
         /*
          모델 attribute 로 파라미터는 받았을텐데, 빠진 정보들이 있을거임. 이걸 추가로 set  .
@@ -285,7 +294,7 @@ public class StudyController {
 
     //글에 감정 남기기 요청 처리 핸들
     @RequestMapping("/{groupId}/post/{postId}/reaction")
-    public String postReactionHandle (@ModelAttribute PostReaction postReaction, @SessionAttribute("user") User user){
+    public String postReactionHandle (@ModelAttribute PostReaction postReaction, @SessionAttribute("user") UserWithAvatar user){
 
         /*
         Map map = new HashMap();

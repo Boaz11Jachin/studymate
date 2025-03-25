@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import org.codenova.studymate.model.entity.Avatar;
 import org.codenova.studymate.model.entity.LoginLog;
 import org.codenova.studymate.model.entity.User;
+import org.codenova.studymate.model.query.UserWithAvatar;
 import org.codenova.studymate.repository.AvatarRepository;
 import org.codenova.studymate.repository.LoginLogRepository;
 import org.codenova.studymate.repository.UserRepository;
@@ -27,7 +28,7 @@ public class MyController {
 
     @RequestMapping("/profile")
     public String profileHandle(HttpSession session, Model model,
-                                @SessionAttribute("user") @Nullable User user){
+                                @SessionAttribute("user") @Nullable UserWithAvatar user){
 
         // User user = (User)session.getAttribute("user");
        if(user == null){
@@ -41,8 +42,8 @@ public class MyController {
         List<LoginLog> loginList = loginLogRepository.findByUserId(user.getId() );
         model.addAttribute("loginList", loginList);
 
-        Avatar avatar = (Avatar)session.getAttribute("avatar");
-        model.addAttribute("avatar", avatar);
+//        Avatar avatar = (Avatar)session.getAttribute("avatar");
+//        model.addAttribute("avatar", avatar);
 
         return "my/profile";
     }

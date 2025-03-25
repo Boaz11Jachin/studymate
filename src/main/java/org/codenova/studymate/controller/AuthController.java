@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.codenova.studymate.model.entity.Avatar;
 import org.codenova.studymate.model.entity.User;
+import org.codenova.studymate.model.query.UserWithAvatar;
 import org.codenova.studymate.repository.AvatarRepository;
 import org.codenova.studymate.repository.LoginLogRepository;
 import org.codenova.studymate.repository.UserRepository;
@@ -55,7 +56,7 @@ public class AuthController {
     @RequestMapping("/login/verify")
     public String loginVerifyHandle(@ModelAttribute User user, HttpSession session) {
 
-        User found = userRepository.findById(user.getId());
+        UserWithAvatar found = userRepository.findWithAvatarById(user.getId());
         if (found == null || !found.getPassword().equals(user.getPassword())) {
             return "auth/login/verify-failed";
         } else {

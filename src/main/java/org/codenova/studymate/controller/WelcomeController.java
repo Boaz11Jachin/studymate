@@ -5,12 +5,15 @@ import lombok.AllArgsConstructor;
 import org.codenova.studymate.model.entity.Avatar;
 import org.codenova.studymate.model.entity.StudyMember;
 import org.codenova.studymate.model.entity.User;
+import org.codenova.studymate.model.query.UserWithAvatar;
 import org.codenova.studymate.repository.AvatarRepository;
 import org.codenova.studymate.repository.StudyGroupRepository;
 import org.codenova.studymate.repository.StudyMemberRepository;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 import java.util.List;
 
@@ -22,19 +25,18 @@ public class WelcomeController {
     private StudyGroupRepository studyGroupRepository;
 
     @RequestMapping({"/", "/index"})
-    public String indexHandle(HttpSession session, Model model) {
+    public String indexHandle(HttpSession session, Model model,
+                              @SessionAttribute("user") @Nullable UserWithAvatar user) {
         if (session.getAttribute("user") == null) {
             return "index";
         } else {
-            User user = (User)session.getAttribute("user");
+
             model.addAttribute("user", user);
             // int avatarId = user.getAvatarId();
 
-            Avatar userAvatar = avatarRepository.findById(user.getAvatarId());
-            model.addAttribute("userAvatar", userAvatar);
 
-        List<StudyMember> studyList = studyMemberRepository.studyGroupsByUserId(user.getId());
-        model.addAttribute("studyList", studyList);
+            List<StudyMember> studyList = studyMemberRepository.studyGroupsByUserId(user.getId());
+            model.addAttribute("studyList", studyList);
 
 
 
